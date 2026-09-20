@@ -1,2 +1,1 @@
-# atyrau-egu.gitlab.io
-Survey 01
+# Lorem ipsum dolor sit amet 
