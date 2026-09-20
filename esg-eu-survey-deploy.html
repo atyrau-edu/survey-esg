@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЕО / ЕС — сауалнама · опрос</title>
+<style>
+:root{
+  --bg:#f6f5f2; --panel:#ffffff; --ink:#1b1c1e; --muted:#5f636a;
+  --line:#dcdad4; --accent:#1c4f8c; --accent-soft:#e8eef7;
+  --warn:#7b4b1e; --ok:#1f6b4a; --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181b; --panel:#1e2125; --ink:#e9e8e4; --muted:#a2a7ae;
+    --line:#333840; --accent:#7fa9de; --accent-soft:#232b36;
+    --warn:#d3a373; --ok:#7ec8a2;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181b; --panel:#1e2125; --ink:#e9e8e4; --muted:#a2a7ae;
+  --line:#333840; --accent:#7fa9de; --accent-soft:#232b36;
+  --warn:#d3a373; --ok:#7ec8a2;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Arial,sans-serif;
+  font-size:16px; line-height:1.5;
+}
+.wrap{max-width:760px; margin:0 auto; padding:20px 16px 72px}
+header.bar{
+  position:sticky; top:0; z-index:5; background:var(--bg);
+  border-bottom:1px solid var(--line); padding:10px 0 8px; margin-bottom:18px;
+}
+.barin{max-width:760px; margin:0 auto; padding:0 16px; display:flex; align-items:center; gap:12px}
+.org{font-size:12px; color:var(--muted); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.progwrap{height:4px; background:var(--line); border-radius:2px; overflow:hidden; margin-top:8px}
+.prog{height:100%; width:0; background:var(--accent); transition:width .25s ease}
+h1{font-size:23px; line-height:1.28; margin:0 0 10px; font-weight:650}
+h2{font-size:17px; margin:26px 0 4px; font-weight:650; color:var(--accent)}
+p{margin:0 0 12px}
+.lead{color:var(--muted); font-size:14.5px}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 6px; margin-bottom:14px}
+.qnum{font-variant-numeric:tabular-nums; color:var(--muted); font-size:13px; letter-spacing:.02em}
+.qtext{font-weight:600; margin:2px 0 10px}
+.hint{font-size:13.5px; color:var(--muted); margin:-4px 0 10px}
+label.opt{
+  display:flex; gap:10px; align-items:flex-start; padding:9px 10px; margin:0 0 6px;
+  border:1px solid var(--line); border-radius:8px; cursor:pointer; background:transparent;
+}
+label.opt:hover{background:var(--accent-soft)}
+label.opt input{margin-top:3px; flex:none; accent-color:var(--accent)}
+label.opt.sel{border-color:var(--accent); background:var(--accent-soft)}
+.scale{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px}
+.scale button{
+  flex:1 1 52px; min-width:52px; padding:11px 4px; font-size:15px; font-weight:600;
+  border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--ink); cursor:pointer;
+}
+.scale button.sel{background:var(--accent); border-color:var(--accent); color:#fff}
+.scale button.dk{flex:1 1 100%; font-weight:500; font-size:13.5px; color:var(--muted)}
+.scale button.dk.sel{color:#fff}
+.ends{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin:-2px 0 12px; gap:10px}
+.grid-row{border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:8px}
+.grid-row .lbl{font-size:15px; margin-bottom:8px}
+.grid-opts{display:flex; gap:6px; flex-wrap:wrap}
+.grid-opts button{
+  flex:1 1 30%; min-width:92px; padding:8px 6px; font-size:12.5px; line-height:1.25;
+  border:1px solid var(--line); border-radius:7px; background:transparent; color:var(--ink); cursor:pointer;
+}
+.grid-opts button.sel{background:var(--accent); border-color:var(--accent); color:#fff}
+select,textarea{
+  width:100%; font:inherit; color:var(--ink); background:var(--panel);
+  border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px;
+}
+textarea{min-height:96px; resize:vertical}
+.rank{display:flex; gap:8px; align-items:center; margin-bottom:8px}
+.rank span{font-size:13px; color:var(--muted); width:28px; flex:none}
+.nav{display:flex; gap:10px; margin-top:18px}
+button.go{
+  flex:1; padding:13px; font-size:16px; font-weight:600; border-radius:9px; cursor:pointer;
+  background:var(--accent); color:#fff; border:1px solid var(--accent);
+}
+button.back{flex:0 0 96px; background:transparent; color:var(--muted); border:1px solid var(--line)}
+button.go:disabled{opacity:.5; cursor:not-allowed}
+.langbtn{
+  display:block; width:100%; text-align:left; padding:16px; margin-bottom:10px; font:inherit;
+  border:1px solid var(--line); border-radius:var(--radius); background:var(--panel); color:var(--ink); cursor:pointer;
+}
+.langbtn:hover{border-color:var(--accent); background:var(--accent-soft)}
+.langbtn b{display:block; font-size:18px; margin-bottom:2px}
+.langbtn small{color:var(--muted)}
+.note{font-size:13.5px; color:var(--warn); margin:8px 0 12px}
+.warnbox{border:1px solid var(--line); border-left:3px solid var(--warn); border-radius:6px; padding:10px 12px; font-size:13.5px; color:var(--muted); margin-bottom:14px}
+.done{text-align:center; padding:40px 10px}
+.done .tick{font-size:40px; color:var(--ok); margin-bottom:10px}
+.small{font-size:13px; color:var(--muted)}
+.err{color:#b3261e; font-size:13.5px}
+@media (max-width:480px){ h1{font-size:20px} .card{padding:15px 14px 4px} }
+</style>
+</head>
+<body>
+<header class="bar" id="bar" hidden>
+  <div class="barin">
+    <div class="org" id="orgline"></div>
+    <button id="langswitch" style="background:none;border:1px solid var(--line);border-radius:6px;color:var(--muted);font:inherit;font-size:12px;padding:4px 9px;cursor:pointer"></button>
+  </div>
+  <div class="barin"><div class="progwrap" style="flex:1"><div class="prog" id="prog"></div></div></div>
+</header>
+
+<div class="wrap" id="app"></div>
+
+<!-- honeypot: never shown to humans, never focusable; a filled value marks a bot -->
+<div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+  <label>Website<input id="hp-field" type="text" tabindex="-1" autocomplete="off"></label>
+</div>
+
+<script>
+/* ===================== CONTENT ===================== */
+const T = {
+  org:{ru:"Атырауский университет имени Х. Досмухамедова",kz:"Х. Досмұхамедов атындағы Атырау университеті",en:"Kh. Dosmukhamedov Atyrau University"},
+  title:{ru:"Европейский Союз и регулирование устойчивого развития: что известно в Атырауской области",kz:"Еуропалық Одақ және тұрақты дамуды реттеу: Атырау облысында не белгілі",en:"The European Union and sustainability regulation: what is known in Atyrau region"},
+  next:{ru:"Далее",kz:"Әрі қарай",en:"Next"},
+  back:{ru:"Назад",kz:"Артқа",en:"Back"},
+  submit:{ru:"Отправить ответы",kz:"Жауаптарды жіберу",en:"Submit responses"},
+  sending:{ru:"Отправка…",kz:"Жіберілуде…",en:"Sending…"},
+  maxsel:{ru:"Отмечено максимум вариантов",kz:"Барынша көп нұсқа белгіленді",en:"Maximum options selected"},
+  locknote:{ru:"К предыдущим вопросам вернуться нельзя — это часть методики.",kz:"Алдыңғы сұрақтарға оралуға болмайды — бұл әдістеменің бөлігі.",en:"You cannot return to earlier questions — this is part of the method."},
+  dk:{ru:"Затрудняюсь ответить",kz:"Жауап беруге қиналамын",en:"Don't know"},
+  scLo:{ru:"совсем нет",kz:"мүлдем емес",en:"not at all"},
+  scHi:{ru:"в полной мере",kz:"толық шамада",en:"fully"},
+  gA:{ru:"Никогда не слышал",kz:"Ешқашан естімегенмін",en:"Never heard of it"},
+  gB:{ru:"Слышал, но не объясню",kz:"Естігенмін, түсіндіре алмаймын",en:"Heard, cannot explain"},
+  gC:{ru:"Смогу объяснить",kz:"Түсіндіре аламын",en:"Could explain it"},
+  thanks:{ru:"Спасибо за участие",kz:"Қатысқаныңыз үшін рақмет",en:"Thank you for taking part"},
+  thanksSub:{ru:"Ваши ответы записаны анонимно и будут использованы только в обобщённом виде.",kz:"Жауаптарыңыз анонимді түрде жазылды және тек жиынтық түрде пайдаланылады.",en:"Your responses have been recorded anonymously and will be used in aggregate only."},
+  saveFail:{ru:"Ответы не удалось записать на сервер. Сохраните их файлом и передайте организаторам.",kz:"Жауаптарды серверге жазу мүмкін болмады. Оларды файл ретінде сақтап, ұйымдастырушыларға беріңіз.",en:"Responses could not be saved to the server. Save them as a file and pass them to the organisers."},
+  saveFile:{ru:"Сохранить файл с ответами",kz:"Жауаптары бар файлды сақтау",en:"Save a file with the responses"},
+  langTitle:{ru:"Выберите язык",kz:"Тілді таңдаңыз",en:"Choose a language"},
+  previewBanner:{ru:"Режим проверки. Ответы не записываются. Это копия для согласования перед публикацией на сайте университета.",
+                 kz:"Тексеру режимі. Жауаптар жазылмайды. Бұл университет сайтында жарияланғанға дейінгі келісуге арналған көшірме.",
+                 en:"Review mode. No responses are recorded. This is a copy for sign-off before deployment on the university site."},
+  previewDone:{ru:"Это была проверочная версия — ответы не сохранены.",
+               kz:"Бұл тексеру нұсқасы болды — жауаптар сақталмады.",
+               en:"This was the review version — no responses were saved."}
+};
+
+const CONSENT = {
+  ru:{h:"Об опросе и согласие",b:[
+    "Атырауский университет имени Х. Досмухамедова изучает, что жители региона знают о Европейском Союзе, его решениях и о том, как эти решения влияют на экономику области.",
+    "Опрос анонимный. Мы не собираем имя, контактные данные и номер группы. Ответы обрабатываются только в обобщённом виде и используются для разработки новой учебной программы и для международной заявки на финансирование.",
+    "Участие добровольное, любой вопрос можно пропустить, заполнение занимает около 12 минут. Продолжая, Вы подтверждаете согласие на участие."]},
+  kz:{h:"Сауалнама туралы және келісім",b:[
+    "Х. Досмұхамедов атындағы Атырау университеті өңір тұрғындарының Еуропалық Одақ, оның шешімдері және бұл шешімдердің облыс экономикасына әсері туралы не білетінін зерттеп жатыр.",
+    "Сауалнама анонимді. Біз аты-жөніңізді, байланыс деректеріңізді және топ нөміріңізді жинамаймыз. Жауаптар тек жиынтық түрде өңделеді және жаңа оқу бағдарламасын әзірлеу мен халықаралық қаржыландыру өтінімі үшін пайдаланылады.",
+    "Қатысу ерікті, кез келген сұрақты өткізіп жіберуге болады, толтыру шамамен 12 минут алады. Жалғастыра отырып, Сіз қатысуға келісіміңізді растайсыз."]},
+  en:{h:"About the survey and consent",b:[
+    "Kh. Dosmukhamedov Atyrau University is studying what people in the region know about the European Union, its decisions, and how those decisions affect the regional economy.",
+    "The survey is anonymous. We collect no name, contact details or group number. Responses are processed in aggregate only and used to design a new course and to support an international funding application.",
+    "Participation is voluntary, any question may be skipped, and completion takes about 12 minutes. By continuing you confirm your consent to participate."]}
+};
+
+const P = (ru,kz,en)=>({ru,kz,en});
+
+const SCREENS = [
+ {block:P("Блок 1. О респонденте","1-блок. Респондент туралы","Block 1. Respondent profile"), qs:[
+  {id:"q1_1",type:"single",t:P("Факультет / направление подготовки","Факультет / даярлау бағыты","Faculty / field of study"),o:[
+   P("Нефтегазовое дело, инженерия, технические специальности","Мұнай-газ ісі, инженерия, техникалық мамандықтар","Oil and gas, engineering, technical"),
+   P("Экономика, финансы, менеджмент, MBA","Экономика, қаржы, менеджмент, MBA","Economics, finance, management, MBA"),
+   P("Право","Құқық","Law"),
+   P("Естественные науки, экология, география","Жаратылыстану ғылымдары, экология, география","Natural sciences, ecology, geography"),
+   P("Педагогика и образование","Педагогика және білім беру","Education and pedagogy"),
+   P("Гуманитарные науки, языки, журналистика","Гуманитарлық ғылымдар, тілдер, журналистика","Humanities, languages, journalism"),
+   P("Другое","Басқа","Other")]},
+  {id:"q1_2",type:"single",t:P("Уровень обучения","Оқу деңгейі","Level of study"),o:[
+   P("Бакалавриат, 1–2 курс","Бакалавриат, 1–2 курс","Bachelor, years 1–2"),
+   P("Бакалавриат, 3–4 курс","Бакалавриат, 3–4 курс","Bachelor, years 3–4"),
+   P("Магистратура","Магистратура","Master"),
+   P("MBA / программа для руководителей","MBA / басшыларға арналған бағдарлама","MBA / executive programme"),
+   P("Докторантура PhD","Докторантура PhD","PhD"),
+   P("Преподаватель / сотрудник университета","Оқытушы / университет қызметкері","Faculty member / university staff")]},
+  {id:"q1_3",type:"single",t:P("Язык обучения","Оқыту тілі","Language of instruction"),o:[
+   P("Казахский","Қазақ","Kazakh"),P("Русский","Орыс","Russian"),P("Английский","Ағылшын","English")]},
+  {id:"q1_4",type:"single",t:P("Работаете ли Вы в настоящее время?","Қазіргі уақытта жұмыс істейсіз бе?","Are you currently employed?"),o:[
+   P("Не работаю","Жұмыс істемеймін","Not working"),
+   P("Нефтегазовый сектор или подрядчик отрасли","Мұнай-газ секторы немесе сала мердігері","Oil and gas sector or an industry contractor"),
+   P("Другая отрасль","Басқа сала","Another industry"),
+   P("Государственная служба, местные исполнительные органы","Мемлекеттік қызмет, жергілікті атқарушы органдар","Public service, local executive bodies"),
+   P("Собственный бизнес","Өз бизнесім","Own business"),
+   P("НПО, общественная организация","ҮЕҰ, қоғамдық ұйым","NGO, civil society organisation")]},
+  {id:"q1_5",type:"single",t:P("Место постоянного проживания","Тұрақты тұратын жеріңіз","Place of permanent residence"),o:[
+   P("г. Атырау","Атырау қаласы","Atyrau city"),P("г. Кульсары","Құлсары қаласы","Kulsary"),
+   P("Район области","Облыс ауданы","District of the region"),P("Сельский округ","Ауылдық округ","Rural okrug"),
+   P("За пределами Атырауской области","Атырау облысынан тыс жер","Outside Atyrau region")]},
+  {id:"q1_6",type:"single",t:P("Возраст","Жасыңыз","Age"),o:[
+   P("до 20","20-ға дейін","under 20"),P("20–24","20–24","20–24"),P("25–34","25–34","25–34"),
+   P("35–44","35–44","35–44"),P("45 и старше","45 және одан жоғары","45 and over")]},
+  {id:"q1_7",type:"single",t:P("Пол","Жынысыңыз","Gender"),o:[
+   P("Женский","Әйел","Female"),P("Мужской","Ер","Male"),P("Предпочитаю не указывать","Көрсеткім келмейді","Prefer not to say")]}
+ ]},
+
+ {block:P("Блок 2. Экологическая ситуация в регионе","2-блок. Өңірдегі экологиялық ахуал","Block 2. Environmental situation in the region"), qs:[
+  {id:"q2_1",type:"multi",max:3,t:P("Выберите до трёх проблем, которые Вы считаете наиболее серьёзными для Атырауской области сегодня.","Бүгінгі таңда Атырау облысы үшін ең елеулі деп санайтын мәселелерді таңдаңыз (үшеуге дейін).","Select up to three problems you consider most serious for Atyrau region today."),o:[
+   P("Выбросы от нефтеперерабатывающего производства, запах, сжигание попутного газа","Мұнай өңдеу өндірісінен шығарындылар, иіс, ілеспе газды жағу","Emissions from oil refining, odour, gas flaring"),
+   P("Снижение уровня Каспийского моря и отступление береговой линии","Каспий теңізі деңгейінің төмендеуі және жағалау сызығының шегінуі","Falling Caspian Sea level and shoreline retreat"),
+   P("Качество воды в реке Урал и питьевого водоснабжения","Жайық өзеніндегі су сапасы және ауыз сумен жабдықтау","Water quality of the Ural river and drinking water"),
+   P("Загрязнение почв нефтепродуктами, исторические амбары и шламонакопители","Топырақтың мұнай өнімдерімен ластануы, ескі амбарлар мен шлам жинақтағыштар","Soil contamination, legacy oil pits and sludge ponds"),
+   P("Обращение с бытовыми и промышленными отходами","Тұрмыстық және өнеркәсіптік қалдықтарды басқару","Municipal and industrial waste management"),
+   P("Сокращение рыбных запасов, в том числе осетровых","Балық қорының, оның ішінде бекіренің азаюы","Decline of fish stocks, including sturgeon"),
+   P("Гибель каспийского тюленя и утрата биоразнообразия","Каспий итбалығының қырылуы және биоәртүрліліктің жоғалуы","Caspian seal mortality and biodiversity loss"),
+   P("Заболеваемость, связанная с состоянием окружающей среды","Қоршаған орта жағдайына байланысты аурушаңдық","Environment-related illness"),
+   P("Ни одну из перечисленных проблем я не считаю серьёзной","Аталғандардың ешқайсысын елеулі деп санамаймын","I do not consider any of these serious")]},
+  {id:"q2_2",type:"single",t:P("Как, по Вашему мнению, изменилось состояние окружающей среды в регионе за последние пять лет?","Сіздің ойыңызша, соңғы бес жылда өңірдегі қоршаған орта жағдайы қалай өзгерді?","How has the state of the environment in the region changed over the past five years?"),o:[
+   P("Значительно улучшилось","Айтарлықтай жақсарды","Much better"),P("Скорее улучшилось","Біршама жақсарды","Somewhat better"),
+   P("Не изменилось","Өзгерген жоқ","Unchanged"),P("Скорее ухудшилось","Біршама нашарлады","Somewhat worse"),
+   P("Значительно ухудшилось","Айтарлықтай нашарлады","Much worse"),P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]},
+  {id:"q2_3",type:"multi",max:4,t:P("Затрагивали ли экологические проблемы региона лично Вас или Вашу семью?","Өңірдің экологиялық мәселелері Сізге немесе отбасыңызға жеке әсер етті ме?","Have the region's environmental problems affected you or your family personally?"),o:[
+   P("Да, здоровье","Иә, денсаулыққа","Yes, health"),
+   P("Да, качество воды или водоснабжение","Иә, су сапасына немесе сумен жабдықтауға","Yes, water quality or supply"),
+   P("Да, работа, рыболовство или доход","Иә, жұмысқа, балық аулауға немесе табысқа","Yes, work, fishing or income"),
+   P("Да, иное","Иә, өзгеше","Yes, other"),
+   P("Нет","Жоқ","No"),
+   P("Предпочитаю не отвечать","Жауап бергім келмейді","Prefer not to answer")]},
+  {id:"q2_4",type:"rank3",t:P("Кто, по Вашему мнению, должен в первую очередь решать эти проблемы? Укажите первые три позиции.","Сіздің ойыңызша, бұл мәселелерді бірінші кезекте кім шешуі тиіс? Алғашқы үш орынды көрсетіңіз.","Who should primarily address these problems? Give your top three."),o:[
+   P("Правительство Республики Казахстан","Қазақстан Республикасының Үкіметі","Government of Kazakhstan"),
+   P("Акимат области и местные органы","Облыс әкімдігі және жергілікті органдар","Regional akimat and local authorities"),
+   P("Нефтегазовые компании, работающие в регионе","Өңірде жұмыс істейтін мұнай-газ компаниялары","Oil and gas companies operating in the region"),
+   P("Международные инвесторы и банки","Халықаралық инвесторлар мен банктер","International investors and banks"),
+   P("Университеты и наука","Университеттер мен ғылым","Universities and research"),
+   P("Жители, общественные организации","Тұрғындар, қоғамдық ұйымдар","Residents and civil society organisations")]},
+  {id:"q2_5",type:"scale",t:P("Насколько Вы согласны: «Я могу узнать достоверную информацию о воздействии на окружающую среду компании, работающей в моём регионе»?","«Өз өңірімде жұмыс істейтін компанияның қоршаған ортаға әсері туралы сенімді ақпарат ала аламын» — қаншалықты келісесіз?","How far do you agree: 'I can obtain reliable information about the environmental impact of a company operating in my region'?")}
+ ]},
+
+ {block:P("Блок 3. Инструменты регулирования","3-блок. Реттеу құралдары","Block 3. Regulatory instruments"), qs:[
+  {id:"q3_1",type:"text",t:P("Назовите любые известные Вам механизмы, стандарты или правила, которые заставляют компанию снижать вред окружающей среде или отчитываться за него. До трёх, своими словами.","Компанияны қоршаған ортаға зиянды азайтуға немесе ол үшін есеп беруге мәжбүрлейтін өзіңізге белгілі тетіктерді, стандарттарды немесе ережелерді атаңыз. Үшеуге дейін, өз сөзіңізбен.","Name any mechanisms, standards or rules you know of that oblige a company to reduce or account for environmental harm. Up to three, in your own words."),
+   hint:P("Если не знаете — напишите «не знаю». Это нормальный ответ.","Білмесеңіз — «білмеймін» деп жазыңыз. Бұл қалыпты жауап.","If you do not know, write 'don't know'. That is a valid answer.")}
+ ]},
+
+ {block:P("Блок 3. Инструменты регулирования","3-блок. Реттеу құралдары","Block 3. Regulatory instruments"), qs:[
+  {id:"q3_2",type:"grid",t:P("Ниже перечислены названия. Для каждого отметьте один вариант.","Төменде атаулар берілген. Әрқайсысы үшін бір нұсқаны белгілеңіз.","For each item below mark one option."),rows:[
+   {k:"esg_rep",t:P("ESG-отчётность","ESG-есептілігі","ESG reporting")},
+   {k:"carbon",t:P("Углеродный след, углеродная нейтральность","Көміртек ізі, көміртек бейтараптығы","Carbon footprint, carbon neutrality")},
+   {k:"kz2060",t:P("Стратегия углеродной нейтральности Казахстана до 2060 года","Қазақстанның 2060 жылға дейінгі көміртек бейтараптығы стратегиясы","Kazakhstan's carbon neutrality strategy to 2060")},
+   {k:"eia",t:P("Оценка воздействия на окружающую среду (ОВОС)","Қоршаған ортаға әсерді бағалау (ҚОӘБ)","Environmental impact assessment")},
+   {k:"iso",t:P("ISO 14001","ISO 14001","ISO 14001")},
+   {k:"gri",t:P("Стандарты отчётности GRI","GRI есептілік стандарттары","GRI reporting standards")},
+   {k:"decoy_eco",t:P("Стандарт «EcoTrust»","«EcoTrust» стандарты","'EcoTrust' standard")},
+   {k:"decoy_ccp",t:P("Каспийский углеродный протокол (CCP-14)","Каспий көміртек хаттамасы (CCP-14)","Caspian Carbon Protocol (CCP-14)")}]},
+  {id:"q3_3",type:"multi",max:5,t:P("Встречали ли Вы ранее аббревиатуру ESG? Где именно?","ESG аббревиатурасын бұрын кездестірдіңіз бе? Қайда?","Have you encountered the abbreviation ESG before? Where?"),o:[
+   P("На занятиях в университете","Университеттегі сабақтарда","In university classes"),
+   P("На работе или на практике","Жұмыста немесе тәжірибеде","At work or during an internship"),
+   P("В СМИ, социальных сетях","БАҚ-та, әлеуметтік желілерде","In media or social networks"),
+   P("От знакомых, в семье","Таныстардан, отбасында","From acquaintances or family"),
+   P("Никогда не встречал","Ешқашан кездестірмегенмін","Never encountered it")]}
+ ]},
+
+ {lock:true, block:P("Блок 3. Инструменты регулирования","3-блок. Реттеу құралдары","Block 3. Regulatory instruments"), qs:[
+  {id:"q3_4",type:"scale",t:P("Насколько хорошо Вы понимаете, что означает ESG для работы компании?","ESG компания жұмысы үшін нені білдіретінін қаншалықты жақсы түсінесіз?","How well do you understand what ESG means for the operation of a company?")}
+ ]},
+
+ {block:P("Блок 3. Инструменты регулирования","3-блок. Реттеу құралдары","Block 3. Regulatory instruments"), qs:[
+  {id:"q3_5",type:"single",t:P("Что из перечисленного относится к букве «G» в ESG?","Төмендегілердің қайсысы ESG-дегі «G» әрпіне жатады?","Which of the following corresponds to the letter 'G' in ESG?"),o:[
+   P("Состав и работа совета директоров, прозрачность, борьба с коррупцией","Директорлар кеңесінің құрамы мен жұмысы, ашықтық, сыбайлас жемқорлыққа қарсы күрес","Board composition and functioning, transparency, anti-corruption"),
+   P("Выбросы парниковых газов","Парниктік газдар шығарындылары","Greenhouse gas emissions"),
+   P("Условия труда и охрана здоровья работников","Еңбек жағдайлары және қызметкерлердің денсаулығын сақтау","Working conditions and employee health"),
+   P("Государственное регулирование отрасли","Саланы мемлекеттік реттеу","State regulation of the industry"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]},
+  {id:"q3_6",type:"single",t:P("Что из перечисленного НЕ относится к экологической составляющей (E)?","Төмендегілердің қайсысы экологиялық құрамдасқа (E) ЖАТПАЙДЫ?","Which of the following does NOT belong to the environmental component (E)?"),o:[
+   P("Потребление воды","Су тұтыну","Water consumption"),
+   P("Обращение с отходами","Қалдықтарды басқару","Waste management"),
+   P("Вознаграждение высшего руководства","Жоғары басшылықтың сыйақысы","Senior executive remuneration"),
+   P("Выбросы в атмосферу","Ауаға шығарындылар","Air emissions"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]}
+ ]},
+
+ {lock:true, block:P("Блок 4. Европейский Союз","4-блок. Еуропалық Одақ","Block 4. The European Union"), qs:[
+  {id:"q4_1",type:"scale",t:P("Насколько хорошо Вы понимаете, как устроен Европейский Союз и как принимаются его решения?","Еуропалық Одақтың қалай құрылғанын және оның шешімдері қалай қабылданатынын қаншалықты жақсы түсінесіз?","How well do you understand how the European Union is organised and how its decisions are taken?")}
+ ]},
+
+ {block:P("Блок 4. Европейский Союз","4-блок. Еуропалық Одақ","Block 4. The European Union"), qs:[
+  {id:"q4_2",type:"single",t:P("Какой орган имеет право предлагать новые законы Европейского Союза?","Еуропалық Одақтың жаңа заңдарын ұсынуға қай орган құқылы?","Which body has the right to propose new European Union laws?"),o:[
+   P("Европейская комиссия","Еуропалық комиссия","European Commission"),
+   P("Европейский совет","Еуропалық кеңес","European Council"),
+   P("Совет Европы","Еуропа Кеңесі","Council of Europe"),
+   P("Европейский центральный банк","Еуропалық орталық банк","European Central Bank"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]},
+  {id:"q4_3",type:"single",t:P("Чем регламент ЕС отличается от директивы ЕС?","ЕО регламенті ЕО директивасынан несімен ерекшеленеді?","How does an EU regulation differ from an EU directive?"),o:[
+   P("Регламент действует напрямую во всех странах ЕС, а директива требует принятия национального закона","Регламент ЕО-ның барлық елдерінде тікелей қолданылады, ал директива ұлттық заң қабылдауды талап етеді","A regulation applies directly in all EU countries; a directive requires national implementing law"),
+   P("Директива обязательна, а регламент носит рекомендательный характер","Директива міндетті, ал регламент ұсынымдық сипатта","A directive is binding; a regulation is only a recommendation"),
+   P("Регламент принимает Европарламент, а директиву — Европейская комиссия","Регламентті Еуропарламент, ал директиваны Еуропалық комиссия қабылдайды","Regulations are adopted by the Parliament, directives by the Commission"),
+   P("Между ними нет различий","Олардың арасында айырмашылық жоқ","There is no difference"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]}
+ ]},
+
+ {block:P("Блок 4. Европейский Союз","4-блок. Еуропалық Одақ","Block 4. The European Union"), qs:[
+  {id:"q4_4",type:"grid",t:P("Ниже перечислены названия. Для каждого отметьте один вариант.","Төменде атаулар берілген. Әрқайсысы үшін бір нұсқаны белгілеңіз.","For each item below mark one option."),rows:[
+   {k:"egd",t:P("Европейский зелёный курс","Еуропалық жасыл келісім","European Green Deal")},
+   {k:"csrd",t:P("Директива ЕС о корпоративной отчётности в области устойчивого развития (CSRD)","ЕО-ның тұрақты даму саласындағы корпоративтік есептілік туралы директивасы (CSRD)","EU Corporate Sustainability Reporting Directive (CSRD)")},
+   {k:"taxonomy",t:P("Таксономия ЕС в области устойчивого финансирования","ЕО-ның тұрақты қаржыландыру таксономиясы","EU sustainable finance taxonomy")},
+   {k:"cbam",t:P("Трансграничный углеродный механизм ЕС (CBAM)","ЕО-ның трансшекаралық көміртек тетігі (CBAM)","EU Carbon Border Adjustment Mechanism (CBAM)")},
+   {k:"erasmus",t:P("Программа Erasmus+","Erasmus+ бағдарламасы","Erasmus+ programme")},
+   {k:"ca_strategy",t:P("Стратегия ЕС по Центральной Азии","ЕО-ның Орталық Азия жөніндегі стратегиясы","EU Strategy on Central Asia")},
+   {k:"paris",t:P("Парижское соглашение по климату","Климат бойынша Париж келісімі","Paris Climate Agreement")},
+   {k:"decoy_gcr",t:P("Регламент ЕС о зелёной конкурентоспособности (GCR-2024)","ЕО-ның жасыл бәсекеге қабілеттілік туралы регламенті (GCR-2024)","EU Green Competitiveness Regulation (GCR-2024)")}]},
+  {id:"q4_5",type:"single",t:P("Изучали ли Вы когда-либо дисциплину, в которой рассматривались Европейский Союз, его институты или политика?","Еуропалық Одақ, оның институттары немесе саясаты қарастырылған пәнді оқыдыңыз ба?","Have you ever studied a discipline covering the EU, its institutions or policies?"),o:[
+   P("Да","Иә","Yes"),P("Нет","Жоқ","No"),P("Не помню","Есімде жоқ","Do not remember")]},
+  {id:"q4_6",type:"single",t:P("Известно ли Вам, что система торговли квотами на выбросы в Казахстане была построена по модели системы Европейского Союза?","Қазақстандағы шығарынды квоталарын саудалау жүйесі Еуропалық Одақ жүйесінің үлгісімен құрылғанын білесіз бе?","Are you aware that Kazakhstan's emissions trading system was modelled on the European Union's?"),o:[
+   P("Да","Иә","Yes"),P("Слышал в общих чертах","Жалпы түрде естігенмін","Heard in general terms"),P("Нет","Жоқ","No")]},
+  {id:"q4_7",type:"single",t:P("Известно ли Вам, что часть товаров, экспортируемых из Казахстана в ЕС, с 2026 года подпадает под углеродное регулирование на границе ЕС?","Қазақстаннан ЕО-ға шығарылатын тауарлардың бір бөлігі 2026 жылдан бастап ЕО шекарасындағы көміртектік реттеуге жататынын білесіз бе?","Are you aware that some goods exported from Kazakhstan to the EU fall under EU carbon border regulation from 2026?"),o:[
+   P("Да, знаю подробно","Иә, егжей-тегжейлі білемін","Yes, in detail"),
+   P("Слышал в общих чертах","Жалпы түрде естігенмін","Heard in general terms"),
+   P("Нет","Жоқ","No")]},
+  {id:"q4_8",type:"single",t:P("Как Вы считаете, влияют ли решения, принимаемые в Европейском Союзе, на экономику Атырауской области?","Сіздің ойыңызша, Еуропалық Одақта қабылданатын шешімдер Атырау облысының экономикасына әсер ете ме?","In your view, do decisions taken in the European Union affect the economy of Atyrau region?"),o:[
+   P("Да, значительно","Иә, айтарлықтай","Yes, significantly"),
+   P("Да, незначительно","Иә, шамалы","Yes, slightly"),
+   P("Нет","Жоқ","No"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]}
+ ]},
+
+ {block:P("Блок 5. Спрос на обучение","5-блок. Оқуға деген сұраныс","Block 5. Demand for training"),
+  intro:P("Европейский Союз принимает правила, которые затрагивают компании и за его пределами, — в том числе требования к отчётности об экологических и социальных последствиях их деятельности и к корпоративному управлению. Такие требования обозначают аббревиатурой ESG.",
+          "Еуропалық Одақ өз шекарасынан тыс жердегі компанияларға да әсер ететін ережелер қабылдайды — оның ішінде олардың қызметінің экологиялық және әлеуметтік салдары туралы есептілікке және корпоративтік басқаруға қойылатын талаптар. Мұндай талаптар ESG аббревиатурасымен белгіленеді.",
+          "The European Union adopts rules that affect companies beyond its borders, including requirements on reporting the environmental and social consequences of their activity and on corporate governance. Such requirements are denoted by the abbreviation ESG."),
+  qs:[
+  {id:"q5_1",type:"scale",t:P("Если бы в Атырауском университете появился курс о том, как Европейский Союз принимает решения и как его правила действуют за пределами ЕС, насколько вероятно, что Вы записались бы на него?","Егер Атырау университетінде Еуропалық Одақтың шешімдерді қалай қабылдайтыны және оның ережелері ЕО-дан тыс жерде қалай әрекет ететіні туралы курс ашылса, оған жазылу ықтималдығыңыз қандай?","If the university offered a course on how the EU takes decisions and how its rules operate beyond its borders, how likely would you be to enrol?")},
+  {id:"q5_2",type:"multi",max:2,t:P("В каком формате такой курс был бы Вам удобен? До двух вариантов.","Мұндай курс Сізге қандай форматта қолайлы болар еді? Екі нұсқаға дейін.","In what format would such a course suit you? Up to two."),o:[
+   P("Элективная дисциплина в рамках моей программы","Өз бағдарламам аясындағы элективті пән","Elective within my degree programme"),
+   P("Модуль в составе программы MBA","MBA бағдарламасының құрамындағы модуль","Module within the MBA programme"),
+   P("Короткий сертификатный курс","Қысқа мерзімді сертификаттық курс","Short certificate course"),
+   P("Летняя школа","Жазғы мектеп","Summer school"),
+   P("Полностью онлайн","Толық онлайн","Fully online"),
+   P("Смешанный формат","Аралас формат","Blended")]},
+  {id:"q5_3",type:"single",t:P("Какая нагрузка была бы для Вас приемлемой?","Қандай оқу жүктемесі қолайлы болар еді?","What workload would be acceptable?"),o:[
+   P("до 20 часов","20 сағатқа дейін","up to 20 hours"),P("20–40 часов","20–40 сағат","20–40 hours"),
+   P("40–60 часов","40–60 сағат","40–60 hours"),P("более 60 часов","60 сағаттан астам","over 60 hours")]},
+  {id:"q5_4",type:"single",t:P("На каком языке Вы предпочли бы обучение?","Оқуды қай тілде өткізген дұрыс деп санайсыз?","In which language would you prefer to study?"),o:[
+   P("Казахский","Қазақ","Kazakh"),P("Русский","Орыс","Russian"),P("Английский","Ағылшын","English"),
+   P("Смешанно, с английской терминологией","Ағылшын терминологиясымен аралас","Mixed, with English terminology")]},
+  {id:"q5_5",type:"multi",max:4,t:P("Какие темы Вам наиболее интересны? До четырёх.","Сізге қандай тақырыптар ең қызықты? Төртеуге дейін.","Which topics interest you most? Up to four."),o:[
+   P("Как устроен ЕС: институты, полномочия, принятие решений","ЕО қалай құрылған: институттар, өкілеттіктер, шешім қабылдау","How the EU works: institutions, competences, decision-making"),
+   P("Как правила ЕС действуют за пределами ЕС","ЕО ережелері ЕО-дан тыс жерде қалай әрекет етеді","How EU rules operate beyond the EU"),
+   P("Европейский зелёный курс: как он появился и как меняется","Еуропалық жасыл келісім: қалай пайда болды және қалай өзгеруде","The Green Deal: how it emerged and how it is changing"),
+   P("Корпоративная отчётность в ЕС: CSRD, CSDDD и их пересмотр","ЕО-дағы корпоративтік есептілік: CSRD, CSDDD және оларды қайта қарау","EU corporate reporting: CSRD, CSDDD and their revision"),
+   P("Таксономия ЕС, зелёное финансирование, зелёные облигации","ЕО таксономиясы, жасыл қаржыландыру, жасыл облигациялар","EU taxonomy, green finance, green bonds"),
+   P("Корпоративное управление в ЕС: советы директоров, права акционеров","ЕО-дағы корпоративтік басқару: директорлар кеңесі, акционерлер құқықтары","EU corporate governance: boards, shareholder rights"),
+   P("Углеродное регулирование ЕС и его влияние на казахстанских экспортёров","ЕО-ның көміртектік реттеуі және оның қазақстандық экспорттаушыларға әсері","EU carbon regulation and its effect on Kazakhstani exporters"),
+   P("Сравнение подходов ЕС и Казахстана, перенос европейских практик","ЕО мен Қазақстан тәсілдерін салыстыру, еуропалық тәжірибені көшіру","Comparing EU and Kazakhstani approaches, policy transfer")]},
+  {id:"q5_6",type:"scale",t:P("Насколько знание европейского регулирования повысило бы Ваши шансы на рынке труда?","Еуропалық реттеуді білу еңбек нарығындағы мүмкіндіктеріңізді қаншалықты арттырар еді?","How far would knowledge of European regulation improve your labour-market prospects?")},
+  {id:"q5_7",type:"single",t:P("Знаете ли Вы работодателей в регионе, которые требуют таких знаний от сотрудников?","Өңірде қызметкерлерден осындай білімді талап ететін жұмыс берушілерді білесіз бе?","Do you know employers in the region requiring such knowledge?"),o:[
+   P("Да, могу назвать","Иә, атай аламын","Yes, I can name one"),
+   P("Слышал, но назвать не могу","Естігенмін, бірақ атай алмаймын","Heard so but cannot name one"),
+   P("Нет","Жоқ","No")]},
+  {id:"q5_8",type:"single",t:P("Если бы курс завершался признаваемым сертификатом, кто должен оплачивать обучение?","Егер курс танылатын сертификатпен аяқталса, оқуды кім төлеуі керек?","If the course ended with a recognised certificate, who should pay?"),o:[
+   P("Я сам","Өзім","Myself"),P("Работодатель","Жұмыс беруші","My employer"),
+   P("Должно быть бесплатным в рамках программы","Бағдарлама аясында тегін болуы керек","It should be free within the programme"),
+   P("Затрудняюсь ответить","Жауап беруге қиналамын","Don't know")]},
+  {id:"q5_9",type:"scale",t:P("Насколько Вам было бы интересно обучение с участием приглашённых преподавателей из университетов ЕС?","ЕО университеттерінен шақырылған оқытушылар қатысатын оқу Сізге қаншалықты қызықты болар еді?","How interested would you be in teaching by guest lecturers from EU universities?")}
+ ]},
+
+ {block:P("Блок 6. Открытый вопрос","6-блок. Ашық сұрақ","Block 6. Open question"), qs:[
+  {id:"q6_1",type:"text",t:P("Что именно Вы хотели бы уметь после такого курса? Напишите свободно.","Мұндай курстан кейін нақты нені істей алғыңыз келеді? Еркін жазыңыз.","What specifically would you like to be able to do after such a course?")}
+ ]}
+];
+
+/* ===================== CONFIG =====================
+   Set these two before deploying to your own hosting.
+   ENDPOINT: the Apps Script web app URL (ends with /exec)
+   SECRET:   the same string as SECRET in Code.gs           */
+const CONFIG = {
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbxhYP1VenZnHwQT-P-jSQ4BxFnU1KrDbswA8nf8KAevhyAX9ouKpWHhZcklYHLxitmRlw/exec",
+  SECRET:   "BELGIUM2026",
+  VERSION:  "web-1.1"
+};
+/* On claude.ai the page runs in review mode: no network call is made,
+   and no response is recorded. On your own hosting it posts to ENDPOINT. */
+const PREVIEW = /(^|\.)claude\.ai$/.test(location.hostname)
+             || CONFIG.ENDPOINT.indexOf("PASTE_") === 0;
+
+/* ===================== STATE ===================== */
+let lang = null, step = -1, minStep = 0, submitted = false;
+const A = {};                       // answers
+const started = new Date().toISOString();
+const startedMs = Date.now();
+const app = document.getElementById('app');
+const bar = document.getElementById('bar');
+const L = (o)=> o && (o[lang] || o.ru || '');
+
+/* ===================== RENDER ===================== */
+function render(){
+  window.scrollTo(0,0);
+  if(step === -1){ renderLang(); return; }
+  bar.hidden = false;
+  document.getElementById('orgline').textContent = L(T.org);
+  const sw = document.getElementById('langswitch');
+  sw.textContent = {ru:'ҚАЗ / ENG',kz:'РУС / ENG',en:'ҚАЗ / РУС'}[lang];
+  sw.onclick = ()=>{ if(confirm({ru:'Сменить язык? Ответы сохранятся.',kz:'Тілді ауыстыру керек пе? Жауаптар сақталады.',en:'Change language? Answers are kept.'}[lang])){ step=-1; render(); } };
+  document.getElementById('prog').style.width = Math.round((step/(SCREENS.length+1))*100)+'%';
+  if(step === 0){ renderConsent(); return; }
+  if(step > SCREENS.length){ renderDone(); return; }
+  renderScreen(SCREENS[step-1]);
+}
+
+function renderLang(){
+  bar.hidden = true;
+  app.innerHTML = '';
+  const h = el('h1', 'Сауалнама · Опрос · Survey');
+  const p = el('p','Атырау университеті · Атырауский университет'); p.className='lead';
+  app.append(h,p);
+  const opts = [
+    {code:'kz', name:'Қазақша', sub:'Сауалнаманы қазақ тілінде толтыру'},
+    {code:'ru', name:'Русский', sub:'Пройти опрос на русском языке'},
+    {code:'en', name:'English', sub:'Take the survey in English'}
+  ];
+  const box = el('div'); box.style.marginTop='18px';
+  opts.forEach(o=>{
+    const b = document.createElement('button');
+    b.className='langbtn';
+    b.innerHTML = '<b></b><small></small>';
+    b.querySelector('b').textContent = o.name;
+    b.querySelector('small').textContent = o.sub;
+    b.onclick = ()=>{ lang=o.code; document.documentElement.lang=o.code; if(step===-1) step=0; render(); };
+    box.append(b);
+  });
+  app.append(box);
+  const n = el('p','~12 min · анонимно · анонимді · anonymous'); n.className='small'; n.style.marginTop='18px';
+  app.append(n);
+}
+
+function renderConsent(){
+  app.innerHTML='';
+  app.append(el('h1', L(T.title)));
+  if(PREVIEW){ const w=el('div', L(T.previewBanner)); w.className='warnbox'; app.append(w); }
+  const c = el('div'); c.className='card';
+  c.append(el('h2', L(CONSENT[lang] ? {ru:CONSENT.ru.h,kz:CONSENT.kz.h,en:CONSENT.en.h} : {})));
+  CONSENT[lang].b.forEach(t=> c.append(el('p',t)));
+  app.append(c);
+  nav(false);
+}
+
+function renderScreen(sc){
+  app.innerHTML='';
+  app.append(el('h2', L(sc.block)));
+  if(sc.intro){ const w=el('div'); w.className='warnbox'; w.textContent=L(sc.intro); app.append(w); }
+  if(sc.lock){ const w=el('div'); w.className='note'; w.textContent=L(T.locknote); app.append(w); }
+  sc.qs.forEach(q=> app.append(qcard(q)));
+  nav(!!sc.lock || step<=minStep);
+}
+
+function qcard(q){
+  const c = el('div'); c.className='card';
+  const n = el('div', q.id.replace(/^q/,'').replace('_','.')); n.className='qnum';
+  const t = el('div', L(q.t)); t.className='qtext';
+  c.append(n,t);
+  if(q.hint){ const h=el('div',L(q.hint)); h.className='hint'; c.append(h); }
+  if(q.type==='single' || q.type==='multi') c.append(optList(q));
+  if(q.type==='scale') c.append(scaleWidget(q));
+  if(q.type==='grid') c.append(gridWidget(q));
+  if(q.type==='rank3') c.append(rankWidget(q));
+  if(q.type==='text') c.append(textWidget(q));
+  return c;
+}
+
+function optList(q){
+  const box = el('div');
+  const multi = q.type==='multi';
+  if(multi) A[q.id] = A[q.id] || [];
+  q.o.forEach((op,i)=>{
+    const lab = document.createElement('label'); lab.className='opt';
+    const inp = document.createElement('input');
+    inp.type = multi?'checkbox':'radio'; inp.name=q.id;
+    const val = i+1;
+    inp.checked = multi ? A[q.id].includes(val) : A[q.id]===val;
+    if(inp.checked) lab.classList.add('sel');
+    inp.onchange = ()=>{
+      if(multi){
+        const cur = A[q.id];
+        if(inp.checked){
+          if(q.max && cur.length>=q.max){ inp.checked=false; flash(box, L(T.maxsel)+' ('+q.max+')'); return; }
+          cur.push(val);
+        } else { A[q.id]=cur.filter(v=>v!==val); }
+      } else { A[q.id]=val; }
+      [...box.querySelectorAll('label.opt')].forEach(l=> l.classList.toggle('sel', l.querySelector('input').checked));
+    };
+    const sp = el('span', L(op));
+    lab.append(inp, sp); box.append(lab);
+  });
+  return box;
+}
+
+function scaleWidget(q){
+  const box = el('div');
+  const row = el('div'); row.className='scale';
+  const mk=(v,label,cls)=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=label;
+    if(cls) b.className=cls;
+    if(A[q.id]===v) b.classList.add('sel');
+    b.onclick=()=>{ A[q.id]=v; [...row.children].forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+    return b;
+  };
+  [1,2,3,4,5].forEach(v=> row.append(mk(v,String(v))));
+  row.append(mk(0, L(T.dk), 'dk'));
+  const ends = el('div'); ends.className='ends';
+  ends.append(el('span','1 — '+L(T.scLo)), el('span','5 — '+L(T.scHi)));
+  box.append(row, ends);
+  return box;
+}
+
+function gridWidget(q){
+  const box = el('div');
+  A[q.id] = A[q.id] || {};
+  q.rows.forEach(r=>{
+    const w = el('div'); w.className='grid-row';
+    const lb = el('div', L(r.t)); lb.className='lbl';
+    const opts = el('div'); opts.className='grid-opts';
+    [['A',T.gA],['B',T.gB],['C',T.gC]].forEach(([code,txt])=>{
+      const b=document.createElement('button'); b.type='button'; b.textContent=L(txt);
+      if(A[q.id][r.k]===code) b.classList.add('sel');
+      b.onclick=()=>{ A[q.id][r.k]=code; [...opts.children].forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+      opts.append(b);
+    });
+    w.append(lb,opts); box.append(w);
+  });
+  return box;
+}
+
+function rankWidget(q){
+  const box = el('div');
+  A[q.id] = A[q.id] || [null,null,null];
+  for(let i=0;i<3;i++){
+    const row = el('div'); row.className='rank';
+    row.append(el('span',(i+1)+'.'));
+    const s=document.createElement('select');
+    const blank=document.createElement('option'); blank.value=''; blank.textContent='—'; s.append(blank);
+    q.o.forEach((op,j)=>{ const o=document.createElement('option'); o.value=String(j+1); o.textContent=L(op); s.append(o); });
+    s.value = A[q.id][i] ? String(A[q.id][i]) : '';
+    s.onchange = ()=>{ A[q.id][i] = s.value ? Number(s.value) : null; };
+    row.append(s); box.append(row);
+  }
+  return box;
+}
+
+function textWidget(q){
+  const ta=document.createElement('textarea');
+  ta.value = A[q.id]||'';
+  ta.oninput = ()=>{ A[q.id]=ta.value; };
+  return ta;
+}
+
+function nav(noBack){
+  const n = el('div'); n.className='nav';
+  if(!noBack && step>0){
+    const b=document.createElement('button'); b.className='go back'; b.textContent=L(T.back);
+    b.onclick=()=>{ step=Math.max(minStep,step-1); render(); };
+    n.append(b);
+  }
+  const g=document.createElement('button'); g.className='go';
+  const last = step===SCREENS.length;
+  g.textContent = last ? L(T.submit) : L(T.next);
+  g.onclick = ()=>{
+    const sc = SCREENS[step-1];
+    if(sc && sc.lock) minStep = step+1;
+    if(last){ submit(g); return; }
+    step++; render();
+  };
+  n.append(g);
+  app.append(n);
+}
+
+function renderDone(){
+  app.innerHTML='';
+  const d=el('div'); d.className='done';
+  d.append(el('div','✓')); d.firstChild.className='tick';
+  d.append(el('h1', L(T.thanks)));
+  const p=el('p', PREVIEW ? L(T.previewDone) : (submitted ? L(T.thanksSub) : L(T.saveFail))); p.className='lead';
+  d.append(p);
+  if(!submitted && !PREVIEW){
+    const b=document.createElement('button'); b.className='go'; b.style.maxWidth='320px'; b.style.margin='12px auto';
+    b.textContent=L(T.saveFile);
+    b.onclick=()=>saveFile();
+    d.append(b);
+  }
+  app.append(d);
+  document.getElementById('prog').style.width='100%';
+}
+
+/* ===================== SUBMIT ===================== */
+/* Flatten answers into one row, per the codebook:
+   single  -> option index (1..n)
+   multi   -> one binary column per option: q__oN = 0/1
+   grid    -> one column per row key: q__key = A|B|C
+   rank3   -> three columns: q__1, q__2, q__3 = option index
+   scale   -> 1..5, or 0 for "don't know"
+   text    -> raw string                                        */
+function flatten(){
+  const row = {};
+  SCREENS.forEach(sc=> sc.qs.forEach(q=>{
+    const v = A[q.id];
+    if(q.type==='single' || q.type==='scale'){ row[q.id] = (v==null? '' : v); }
+    else if(q.type==='multi'){ q.o.forEach((_,i)=>{ row[q.id+'__o'+(i+1)] = (v&&v.includes(i+1))?1:0; }); }
+    else if(q.type==='grid'){ q.rows.forEach(r=>{ row[q.id+'__'+r.k] = (v&&v[r.k])||''; }); }
+    else if(q.type==='rank3'){ for(let i=0;i<3;i++) row[q.id+'__'+(i+1)] = (v&&v[i])||''; }
+    else if(q.type==='text'){ row[q.id] = (v||'').trim(); }
+  }));
+  return row;
+}
+
+function payload(){
+  return {
+    secret: CONFIG.SECRET,
+    meta: {
+      lang, started, finished:new Date().toISOString(),
+      elapsed_s: Math.round((Date.now()-startedMs)/1000),
+      ua_lang:(navigator.language||''),
+      screen_w: window.innerWidth,
+      instrument:"A", version:CONFIG.VERSION
+    },
+    row: flatten()
+  };
+}
+
+async function submit(btn){
+  btn.disabled=true; btn.textContent=L(T.sending);
+
+  /* honeypot: filled means a bot; elapsed guard: under 45s means not a real pass */
+  const hp = document.getElementById('hp-field');
+  const tooFast = (Date.now()-startedMs) < 45000;
+  if((hp && hp.value) || tooFast){ submitted = PREVIEW; step=SCREENS.length+1; render(); return; }
+
+  if(PREVIEW){ submitted = true; step=SCREENS.length+1; render(); return; }
+
+  try{
+    const res = await fetch(CONFIG.ENDPOINT, {
+      method:'POST', mode:'cors', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},   // avoids CORS preflight
+      body: JSON.stringify(payload())
+    });
+    const out = await res.json();
+    submitted = !!(out && out.ok);
+  }catch(e){ submitted = false; }
+
+  if(!submitted){ try{ localStorage.setItem('pending_'+Date.now(), JSON.stringify(payload())); }catch(e){} }
+  step = SCREENS.length+1;
+  render();
+}
+
+async function saveFile(){
+  const data = JSON.stringify(payload(), null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'survey-response-'+Date.now()+'.json';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ===================== UTIL ===================== */
+function el(tag, text){ const e=document.createElement(tag); if(text!=null) e.textContent=text; return e; }
+function flash(node,msg){
+  let w=node.querySelector('.err');
+  if(!w){ w=el('div',''); w.className='err'; node.append(w); }
+  w.textContent=msg; setTimeout(()=>{ if(w) w.textContent=''; },2200);
+}
+
+render();
+</script>
+</body>
+</html>
